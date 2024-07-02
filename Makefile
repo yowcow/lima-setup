@@ -21,16 +21,18 @@ apt-setup:
 		| gpg --dearmor -o $@
 
 /etc/apt/sources.list.d/hashicorp.list: LSB_RELEASE = jammy
+/etc/apt/sources.list.d/hashicorp.list: ARCH = $(shell dpkg --print-architecture)
 /etc/apt/sources.list.d/hashicorp.list: /usr/share/keyrings/hashicorp-archive-keyring.gpg
-    echo "deb [arch=$$(dpkg --print-architecture) signed-by=$<] https://apt.releases.hashicorp.com $(LSB_RELEASE) main" > $@
+    echo "deb [arch=$(ARCH) signed-by=$<] https://apt.releases.hashicorp.com $(LSB_RELEASE) main" > $@
 
 /usr/share/keyrings/hashicorp-archive-keyring.gpg:
 	curl https://apt.releases.hashicorp.com/gpg \
 		| gpg --dearmor -o $@
 
 .PHONY: install
-install: apt-install
-	$(MAKE) /usr/local/bin/aws
+install:
+	$(MAKE) apt-install
+	$(MAKE) aws-install
 
 .PHONY: apt-install
 apt-install:
@@ -71,6 +73,10 @@ apt-install:
 	apt-get install -yq google-cloud-cli
 	apt-get install -yq terraform terraform-ls
 
+.PHONY: aws-install
+aws-install: /tmp/session-manager-plugin.deb /usr/local/bin/aws
+	dpkg -i $<
+
 /usr/local/bin/aws: /tmp/awscliv2
 	if [ "$$(command -v aws)" != "" ]; then \
 		$</aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update; \
@@ -84,6 +90,10 @@ apt-install:
 /tmp/awscliv2.zip: ARCH = $(shell uname -i)
 /tmp/awscliv2.zip:
 	curl "https://awscli.amazonaws.com/awscli-exe-linux-$(ARCH).zip" -o $@
+
+/tmp/session-manager-plugin.deb: ARCH = $(shell dpkg --print-architecture)
+/tmp/session-manager-plugin.deb:
+	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_$(ARCH)/session-manager-plugin.deb" -o $@
 
 .PHONY: clean
 clean:
