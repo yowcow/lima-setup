@@ -41,10 +41,12 @@ apt-install:
 		apt-file \
 		build-essential \
 		cmake \
+		curl \
 		docker-buildx \
 		docker-compose-v2 \
 		docker.io \
 		erlang \
+		gettext \
 		git \
 		golang \
 		gpg \
@@ -57,6 +59,7 @@ apt-install:
 		ncal \
 		neovim \
 		netcat-openbsd \
+		ninja-build \
 		pass \
 		perl \
 		php-cli \
@@ -68,6 +71,7 @@ apt-install:
 		socat \
 		speedtest-cli \
 		tmux \
+		unzip \
 		whois \
 		zsh
 	apt-get install -yq google-cloud-cli
