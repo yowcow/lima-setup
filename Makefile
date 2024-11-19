@@ -65,6 +65,7 @@ apt-install:
 		php-cli \
 		pinentry-tty \
 		pipx \
+		qemu-system \
 		rebar3 \
 		ripgrep \
 		rustup \
