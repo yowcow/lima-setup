@@ -39,6 +39,7 @@ apt-install:
 	apt-get update
 	apt-get install -yq \
 		apt-file \
+		binfmt-support \
 		build-essential \
 		cmake \
 		curl \
