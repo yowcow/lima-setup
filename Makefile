@@ -66,6 +66,7 @@ apt-install:
 		php-cli \
 		pinentry-tty \
 		pipx \
+		protobuf-compiler \
 		qemu-system \
 		rebar3 \
 		ripgrep \
