@@ -40,6 +40,7 @@ apt-install:
 	apt-get install -yq \
 		apt-file \
 		binfmt-support \
+		bison \
 		build-essential \
 		cmake \
 		curl \
@@ -52,6 +53,7 @@ apt-install:
 		golang \
 		gpg \
 		htop \
+		libevent-dev \
 		libssl-dev \
 		libxml2-utils \
 		luarocks \
