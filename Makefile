@@ -56,7 +56,7 @@ apt-install:
 		libbz2-dev \
 		libevent-dev \
 		libffi-dev \
-		liblz-dev \
+		liblzma-dev \
 		libsqlite3-dev \
 		libssl-dev \
 		libutf8proc-dev \
