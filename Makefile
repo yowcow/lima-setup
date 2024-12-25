@@ -42,6 +42,7 @@ apt-install:
 		binfmt-support \
 		bison \
 		build-essential \
+		carton \
 		cmake \
 		curl \
 		docker-buildx \
