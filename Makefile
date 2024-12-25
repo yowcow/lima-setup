@@ -71,6 +71,7 @@ apt-install:
 		ninja-build \
 		pass \
 		perl \
+		perl-doc \
 		php-cli \
 		pinentry-tty \
 		pipx \
