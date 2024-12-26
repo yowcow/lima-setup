@@ -44,6 +44,7 @@ apt-install:
 		build-essential \
 		carton \
 		cmake \
+		cpanminus \
 		curl \
 		docker-buildx \
 		docker-compose-v2 \
@@ -58,6 +59,7 @@ apt-install:
 		libevent-dev \
 		libffi-dev \
 		liblzma-dev \
+		libprotoc-dev \
 		libsqlite3-dev \
 		libssl-dev \
 		libutf8proc-dev \
