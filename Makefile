@@ -50,6 +50,7 @@ apt-install:
 		docker-compose-v2 \
 		docker.io \
 		erlang \
+		fd-find \
 		gettext \
 		git \
 		golang \
