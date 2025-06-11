@@ -76,6 +76,8 @@ apt-install:
 		perl \
 		perl-doc \
 		php-cli \
+		php-mbstring \
+		php-xml \
 		pinentry-tty \
 		pipx \
 		protobuf-compiler \
