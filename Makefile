@@ -1,8 +1,32 @@
-APT_SOURCES := $(foreach file, hashicorp.list, $(addprefix /etc/apt/sources.list.d/, $(file)))
+APT_FILES = hashicorp.list github-cli.list
+APT_SOURCES = $(foreach file,$(APT_FILES),$(addprefix /etc/apt/sources.list.d/, $(file)))
+
+LSB_RELEASE = jammy
+ARCH = $(shell dpkg --print-architecture)
 
 .PHONY: all
 all: apt-setup
 	$(MAKE) $(APT_SOURCES)
+
+/etc/apt/sources.list.d/hashicorp.list: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+	echo "deb [arch=$(ARCH) signed-by=$<] https://apt.releases.hashicorp.com $(LSB_RELEASE) main" | tee $@
+
+/usr/share/keyrings/hashicorp-archive-keyring.gpg:
+	curl https://apt.releases.hashicorp.com/gpg \
+		| gpg --dearmor --batch --yes -o $@
+
+/etc/apt/sources.list.d/github-cli.list: /usr/share/keyrings/githubcli-archive-keyring.gpg
+	echo "deb [arch=$(ARCH) signed-by=$<] https://cli.github.com/packages stable main" | tee $@
+
+/usr/share/keyrings/githubcli-archive-keyring.gpg:
+	curl -L https://cli.github.com/packages/githubcli-archive-keyring.gpg -o $@
+
+#/etc/apt/sources.list.d/google-cloud-sdk.list: /usr/share/keyrings/cloud.google.gpg
+#    echo "deb [signed-by=$<] https://packages.cloud.google.com/apt cloud-sdk main" > $@
+#
+#/usr/share/keyrings/cloud.google.gpg:
+#	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+#		| gpg --dearmor -o $@
 
 .PHONY: apt-setup
 apt-setup:
@@ -12,22 +36,6 @@ apt-setup:
 		ca-certificates \
 		curl \
 		gnupg
-
-#/etc/apt/sources.list.d/google-cloud-sdk.list: /usr/share/keyrings/cloud.google.gpg
-#    echo "deb [signed-by=$<] https://packages.cloud.google.com/apt cloud-sdk main" > $@
-#
-#/usr/share/keyrings/cloud.google.gpg:
-#	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-#		| gpg --dearmor -o $@
-
-/etc/apt/sources.list.d/hashicorp.list: LSB_RELEASE = jammy
-/etc/apt/sources.list.d/hashicorp.list: ARCH = $(shell dpkg --print-architecture)
-/etc/apt/sources.list.d/hashicorp.list: /usr/share/keyrings/hashicorp-archive-keyring.gpg
-    echo "deb [arch=$(ARCH) signed-by=$<] https://apt.releases.hashicorp.com $(LSB_RELEASE) main" > $@
-
-/usr/share/keyrings/hashicorp-archive-keyring.gpg:
-	curl https://apt.releases.hashicorp.com/gpg \
-		| gpg --dearmor -o $@
 
 .PHONY: install
 install:
@@ -52,6 +60,7 @@ apt-install:
 		erlang \
 		fd-find \
 		gettext \
+		gh \
 		git \
 		golang \
 		gpg \
