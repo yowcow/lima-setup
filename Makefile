@@ -21,13 +21,6 @@ all: apt-setup
 /usr/share/keyrings/githubcli-archive-keyring.gpg:
 	curl -L https://cli.github.com/packages/githubcli-archive-keyring.gpg -o $@
 
-#/etc/apt/sources.list.d/google-cloud-sdk.list: /usr/share/keyrings/cloud.google.gpg
-#    echo "deb [signed-by=$<] https://packages.cloud.google.com/apt cloud-sdk main" > $@
-#
-#/usr/share/keyrings/cloud.google.gpg:
-#	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-#		| gpg --dearmor -o $@
-
 .PHONY: apt-setup
 apt-setup:
 	apt-get update
@@ -100,7 +93,6 @@ apt-install:
 		unzip \
 		whois \
 		zsh
-	#apt-get install -yq google-cloud-cli
 	apt-get install -yq terraform terraform-ls
 
 .PHONY: aws-install
