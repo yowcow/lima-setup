@@ -1,5 +1,5 @@
 APT_FILES = hashicorp.list github-cli.list
-APT_SOURCES = $(foreach file,$(APT_FILES),$(addprefix /etc/apt/sources.list.d/, $(file)))
+APT_SOURCES = $(foreach file,$(APT_FILES),$(addprefix /etc/apt/sources.list.d/, $(file) ))
 
 LSB_RELEASE = jammy
 ARCH = $(shell dpkg --print-architecture)
@@ -96,35 +96,9 @@ apt-install:
 	apt-get install -yq terraform terraform-ls
 
 .PHONY: aws-install
-aws-install: /usr/local/bin/aws
-
-/usr/local/bin/aws:
-	$(MAKE) aws-install-cliv2
-	$(MAKE) aws-install-session-manager-plugin
-
-.PHONY: aws-install-cliv2
-aws-install-cliv2: /tmp/awscliv2
-	if [ "$$(command -v aws)" != "" ]; then \
-		$</aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update; \
-	else \
-		$</aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli; \
-	fi
-
-/tmp/awscliv2: /tmp/awscliv2.zip
-	unzip $< -d $@
-
-aws-install-session-manager-plugin: /tmp/session-manager-plugin.deb
+aws-install: /tmp/session-manager-plugin.deb
 	dpkg -i $<
 
-.INTERMEDIATE: /tmp/awscliv2.zip /tmp/session-manager-plugin.deb
-/tmp/awscliv2.zip: ARCH = $(shell uname -i)
-/tmp/awscliv2.zip:
-	curl "https://awscli.amazonaws.com/awscli-exe-linux-$(ARCH).zip" -o $@
-
-/tmp/session-manager-plugin.deb: ARCH = $(shell dpkg --print-architecture)
+.INTERMEDIATE: /tmp/session-manager-plugin.deb
 /tmp/session-manager-plugin.deb:
 	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_$(ARCH)/session-manager-plugin.deb" -o $@
-
-.PHONY: clean
-clean:
-	rm -rf /tmp/awscliv2 /tmp/awscliv2.zip
