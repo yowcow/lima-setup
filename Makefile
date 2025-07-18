@@ -74,6 +74,7 @@ apt-install:
 		neovim \
 		netcat-openbsd \
 		ninja-build \
+		nsnake \
 		pass \
 		perl \
 		perl-doc \
