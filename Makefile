@@ -40,6 +40,7 @@ apt-install:
 	apt-get update
 	apt-get install -yq \
 		apt-file \
+		automake \
 		binfmt-support \
 		bison \
 		build-essential \
