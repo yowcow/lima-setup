@@ -33,6 +33,7 @@ apt-setup:
 .PHONY: install
 install:
 	$(MAKE) apt-install
+	$(MAKE) snap-install
 	$(MAKE) aws-install
 
 .PHONY: apt-install
@@ -48,6 +49,7 @@ apt-install:
 		cmake \
 		cpanminus \
 		curl \
+		daemontools \
 		docker-buildx \
 		docker-compose-v2 \
 		docker.io \
@@ -96,6 +98,11 @@ apt-install:
 		whois \
 		zsh
 	apt-get install -yq terraform terraform-ls
+
+.PHONY: snap-install
+snap-install:
+	snap install --classic aws-cli
+	snap install --classic google-cloud-sdk
 
 .PHONY: aws-install
 aws-install: /tmp/session-manager-plugin.deb
