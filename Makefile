@@ -50,6 +50,7 @@ apt-install:
 		cpanminus \
 		curl \
 		daemontools \
+		direnv \
 		docker-buildx \
 		docker-compose-v2 \
 		docker.io \
@@ -81,6 +82,8 @@ apt-install:
 		pass \
 		perl \
 		perl-doc \
+		perlimports \
+		perltidy \
 		php-cli \
 		php-mbstring \
 		php-xml \
