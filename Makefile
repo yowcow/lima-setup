@@ -25,11 +25,19 @@ clean:
 help:
 	@echo "Usage: sudo make <target>"
 	@echo ""
+	@echo "First-time setup:"
+	@echo "  install      Set up APT sources, install all packages (all-in-one)"
+	@echo ""
+	@echo "Updates:"
+	@echo "  update       Upgrade APT packages, refresh snaps, update Session Manager Plugin"
+	@echo ""
+	@echo "Individual targets:"
 	@echo "  all          Set up APT sources (HashiCorp, GitHub CLI)"
-	@echo "  install      Install all packages (apt-install + snap-install + aws-install)"
 	@echo "  apt-install  Install APT packages"
-	@echo "  snap-install Install snap packages (aws-cli, google-cloud-sdk)"
-	@echo "  aws-install  Install AWS Session Manager Plugin"
+	@echo "  apt-upgrade  Upgrade installed APT packages"
+	@echo "  snap-install Install snap packages (idempotent)"
+	@echo "  snap-refresh Refresh all snap packages"
+	@echo "  aws-install  Install/update AWS Session Manager Plugin"
 	@echo "  clean        Remove APT source files and keyrings added by 'all'"
 
 /etc/apt/sources.list.d/hashicorp.list: /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -55,9 +63,15 @@ apt-setup:
 		gnupg
 
 .PHONY: install
-install:
+install: all
 	$(MAKE) apt-install
 	$(MAKE) snap-install
+	$(MAKE) aws-install
+
+.PHONY: update
+update:
+	$(MAKE) apt-upgrade
+	$(MAKE) snap-refresh
 	$(MAKE) aws-install
 
 .PHONY: apt-install
@@ -126,10 +140,19 @@ apt-install:
 		zsh
 	apt-get install -yq terraform terraform-ls
 
+.PHONY: apt-upgrade
+apt-upgrade:
+	apt-get update
+	apt-get upgrade -yq
+
 .PHONY: snap-install
 snap-install:
-	snap install --classic aws-cli
-	snap install --classic google-cloud-sdk
+	snap install --classic aws-cli || snap refresh aws-cli
+	snap install --classic google-cloud-sdk || snap refresh google-cloud-sdk
+
+.PHONY: snap-refresh
+snap-refresh:
+	snap refresh
 
 .PHONY: aws-install
 aws-install: /tmp/session-manager-plugin.deb

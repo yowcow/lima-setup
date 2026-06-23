@@ -15,25 +15,17 @@ A fresh Lima VM setup consists of two phases: system-level setup (this repo, run
 
 ### Phase 1 — System setup (this repo)
 
-1.  **Setup APT Repositories:**
-    Adds the necessary APT repositories for HashiCorp and GitHub CLI tools.
+Run the following as root. This sets up APT sources and installs all packages in one shot:
 
-    ```bash
-    sudo make all
-    ```
+```bash
+sudo make install
+```
 
-2.  **Install Packages:**
-    Installs all packages and tools defined in the `Makefile`.
+To keep packages up to date on an existing VM:
 
-    ```bash
-    sudo make install
-    ```
-
-    Or run both at once:
-
-    ```bash
-    sudo make all install
-    ```
+```bash
+sudo make update
+```
 
 ### Phase 2 — User dotfiles setup
 
@@ -48,14 +40,18 @@ make -C ~/dotfiles install
 
 The `Makefile` provides several targets to manage the installation:
 
-| Target        | Description                                                                                                                                                                 |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `all`         | Sets up APT sources for HashiCorp (`terraform`, `terraform-ls`) and GitHub CLI (`gh`).                                                                                        |
-| `install`     | A meta-target that runs `apt-install`, `snap-install`, and `aws-install`.                                                                                                   |
-| `apt-install` | Installs a wide range of packages from the APT repositories. Key packages include: `git`, `golang`, `docker.io`, `neovim`, `terraform`, `rustup`, `gh`, `perl`, `php-cli`, and more. |
-| `aws-install` | Installs the AWS CLI v2 and the AWS Session Manager Plugin.                                                                                                                 |
-| `clean`       | Removes APT source files and keyrings added by `all`.                                                                                                                       |
-| `help`        | Shows a help message with all available targets.                                                                                                                            |
+| Target         | Description                                                                                                                                                                |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `install`      | **First-time setup.** Sets up APT sources, then runs `apt-install`, `snap-install`, and `aws-install`.                                                                     |
+| `update`       | **Ongoing updates.** Upgrades APT packages, refreshes snaps, and reinstalls the latest Session Manager Plugin.                                                             |
+| `all`          | Sets up APT sources for HashiCorp (`terraform`, `terraform-ls`) and GitHub CLI (`gh`). Called automatically by `install`.                                                  |
+| `apt-install`  | Installs APT packages: `git`, `golang`, `docker.io`, `neovim`, `terraform`, `rustup`, `gh`, `perl`, `php-cli`, and more.                                                  |
+| `apt-upgrade`  | Runs `apt-get upgrade` to upgrade all installed APT packages.                                                                                                              |
+| `snap-install` | Installs snap packages (`aws-cli`, `google-cloud-sdk`). Idempotent — runs `snap refresh` if already installed.                                                             |
+| `snap-refresh` | Refreshes all installed snap packages.                                                                                                                                     |
+| `aws-install`  | Downloads and installs the latest AWS Session Manager Plugin.                                                                                                              |
+| `clean`        | Removes APT source files and keyrings added by `all`.                                                                                                                      |
+| `help`         | Shows a help message with all available targets.                                                                                                                           |
 
 ## Customization
 
