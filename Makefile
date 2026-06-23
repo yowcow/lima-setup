@@ -1,12 +1,36 @@
 APT_FILES = hashicorp.list github-cli.list
 APT_SOURCES = $(foreach file,$(APT_FILES),$(addprefix /etc/apt/sources.list.d/, $(file) ))
 
-LSB_RELEASE = jammy
+LSB_RELEASE = $(shell lsb_release -cs)
 ARCH = $(shell dpkg --print-architecture)
+
+# AWS Session Manager uses "64bit" for amd64
+ifeq ($(ARCH),amd64)
+SM_ARCH = 64bit
+else
+SM_ARCH = $(ARCH)
+endif
 
 .PHONY: all
 all: apt-setup
 	$(MAKE) $(APT_SOURCES)
+
+.PHONY: clean
+clean:
+	rm -f $(APT_SOURCES) \
+		/usr/share/keyrings/hashicorp-archive-keyring.gpg \
+		/usr/share/keyrings/githubcli-archive-keyring.gpg
+
+.PHONY: help
+help:
+	@echo "Usage: sudo make <target>"
+	@echo ""
+	@echo "  all          Set up APT sources (HashiCorp, GitHub CLI)"
+	@echo "  install      Install all packages (apt-install + snap-install + aws-install)"
+	@echo "  apt-install  Install APT packages"
+	@echo "  snap-install Install snap packages (aws-cli, google-cloud-sdk)"
+	@echo "  aws-install  Install AWS Session Manager Plugin"
+	@echo "  clean        Remove APT source files and keyrings added by 'all'"
 
 /etc/apt/sources.list.d/hashicorp.list: /usr/share/keyrings/hashicorp-archive-keyring.gpg
 	echo "deb [arch=$(ARCH) signed-by=$<] https://apt.releases.hashicorp.com $(LSB_RELEASE) main" | tee $@
@@ -113,4 +137,4 @@ aws-install: /tmp/session-manager-plugin.deb
 
 .INTERMEDIATE: /tmp/session-manager-plugin.deb
 /tmp/session-manager-plugin.deb:
-	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_$(ARCH)/session-manager-plugin.deb" -o $@
+	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_$(SM_ARCH)/session-manager-plugin.deb" -o $@
