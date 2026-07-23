@@ -134,6 +134,7 @@ apt-install:
 		rustup \
 		socat \
 		speedtest-cli \
+		sqlite3 \
 		tmux \
 		unzip \
 		whois \
